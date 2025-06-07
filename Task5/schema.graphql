@@ -1,0 +1,69 @@
+# Схема
+
+type Query {
+  client(id: ID!): Client
+}
+
+type Client {
+  id: ID!
+  name: String!
+  age: Int
+  documents: [Document!]!    # Вложенная сущность документов
+  relatives: [Relative!]!    # Вложенная сущность родственников
+}
+
+type Document {
+  id: ID!
+  type: String!
+  number: String!
+  issueDate: String!         # Можно заменить кастомным scalar Date
+  expiryDate: String
+}
+
+type Relative {
+  id: ID!
+  relationType: String!
+  name: String!
+  age: Int
+}
+
+# Запросы:
+
+# Аналог GET /clients/{id}
+query {
+  client(id: "123") {
+    id
+    name
+    age
+  }
+}
+
+# Аналог GET /clients/{id}/documents
+query {
+  client(id: "123") {
+    documents {
+      id
+      type
+      number
+    }
+  }
+}
+
+# Аналог GET /clients/{id}/relatives
+query {
+  client(id: "123") {
+    relatives {
+      relationType
+      name
+    }
+  }
+}
+
+# Комбинированный запрос (невозможен в REST)
+query {
+  client(id: "123") {
+    name
+    documents { type number }
+    relatives { name relationType }
+  }
+}
